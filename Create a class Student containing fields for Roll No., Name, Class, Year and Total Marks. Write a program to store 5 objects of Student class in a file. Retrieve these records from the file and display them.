@@ -1,0 +1,108 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <iomanip>
+
+using namespace std;
+
+class Student {
+private:
+    int rollNo;
+    string name;
+    string className;
+    int year;
+    float totalMarks;
+
+public:
+    // Constructor
+    Student(int r = 0, string n = "", string c = "", int y = 0, float m = 0.0f) 
+        : rollNo(r), name(n), className(c), year(y), totalMarks(m) {}
+
+    // Function to display student details
+    void display() const {
+        cout << left << setw(10) << rollNo 
+             << setw(20) << name 
+             << setw(10) << className 
+             << setw(10) << year 
+             << setw(10) << totalMarks << endl;
+    }
+
+    // Friend functions for file operations
+    friend ofstream& operator<<(ofstream& ofs, const Student& s);
+    friend ifstream& operator>>(ifstream& ifs, Student& s);
+};
+
+// Overloaded << operator for writing to file
+ofstream& operator<<(ofstream& ofs, const Student& s) {
+    ofs << s.rollNo << endl;
+    ofs << s.name << endl;
+    ofs << s.className << endl;
+    ofs << s.year << endl;
+    ofs << s.totalMarks << endl;
+    return ofs;
+}
+
+// Overloaded >> operator for reading from file
+ifstream& operator>>(ifstream& ifs, Student& s) {
+    ifs >> s.rollNo;
+    ifs.ignore(); // To ignore the newline character
+    getline(ifs, s.name);
+    getline(ifs, s.className);
+    ifs >> s.year;
+    ifs >> s.totalMarks;
+    ifs.ignore(); // To ignore the newline character
+    return ifs;
+}
+
+int main() {
+    // Create 5 student objects
+    Student students[5] = {
+        Student(101, "John Doe", "10th", 2023, 450.5f),
+        Student(102, "Jane Smith", "9th", 2023, 480.0f),
+        Student(103, "Robert Johnson", "11th", 2023, 425.75f),
+        Student(104, "Emily Davis", "12th", 2023, 495.25f),
+        Student(105, "Michael Brown", "10th", 2023, 460.0f)
+    };
+
+    // Write students to file
+    ofstream outFile("students.txt");
+    if (!outFile) {
+        cerr << "Error opening file for writing!" << endl;
+        return 1;
+    }
+
+    for (int i = 0; i < 5; i++) {
+        outFile << students[i];
+    }
+    outFile.close();
+
+    cout << "Student records written to file successfully.\n\n";
+
+    // Read students from file
+    ifstream inFile("students.txt");
+    if (!inFile) {
+        cerr << "Error opening file for reading!" << endl;
+        return 1;
+    }
+
+    Student readStudents[5];
+    for (int i = 0; i < 5; i++) {
+        inFile >> readStudents[i];
+    }
+    inFile.close();
+
+    // Display the read students
+    cout << "Retrieved Student Records:\n";
+    cout << left << setw(10) << "Roll No." 
+         << setw(20) << "Name" 
+         << setw(10) << "Class" 
+         << setw(10) << "Year" 
+         << setw(10) << "Marks" << endl;
+    cout << string(60, '-') << endl;
+
+    for (int i = 0; i < 5; i++) {
+        readStudents[i].display();
+    }
+
+    return 0;
+}
