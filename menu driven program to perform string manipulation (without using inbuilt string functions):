@@ -1,0 +1,196 @@
+#include <stdio.h>
+#include <string.h>
+
+// Helper function to remove the newline character
+void trimNewline(char *str) {
+    size_t length = strlen(str);
+    if (length > 0 && str[length - 1] == '\n') {
+        str[length - 1] = '\0';
+    }
+}
+
+void showAddress(char *str) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        printf("Address of '%c': %p\n", str[i], &str[i]);
+    }
+}
+
+void concatenateStrings(char *str1, char *str2) {
+    trimNewline(str1); // Remove newline from str1
+    trimNewline(str2); // Remove newline from str2
+
+    int i = 0;
+    while (str1[i] != '\0') {
+        i++;
+    }
+    int j = 0;
+    while (str2[j] != '\0') {
+        str1[i] = str2[j];
+        i++;
+        j++;
+    }
+    str1[i] = '\0';
+    printf("Concatenated String: %s\n", str1);
+}
+
+int compareStrings(char *str1, char *str2) {
+    trimNewline(str1);
+    trimNewline(str2);
+
+    int i = 0;
+    while (str1[i] != '\0' && str2[i] != '\0') {
+        if (str1[i] != str2[i]) {
+            return 0; // Strings are not equal
+        }
+        i++;
+    }
+    return (str1[i] == '\0' && str2[i] == '\0'); // Return true if both strings are equal
+}
+
+int calculateLength(char *str) {
+    trimNewline(str);
+
+    int length = 0;
+    while (str[length] != '\0') {
+        length++;
+    }
+    return length;
+}
+
+void convertToUpper(char *str) {
+    trimNewline(str);
+
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] >= 'a' && str[i] <= 'z') {
+            str[i] = str[i] - 'a' + 'A'; // Convert lowercase to uppercase
+        }
+    }
+    printf("Uppercase String: %s\n", str);
+}
+
+void reverseString(char *str) {
+    trimNewline(str);
+
+    int length = calculateLength(str);
+    for (int i = 0; i < length / 2; i++) {
+        char temp = str[i];
+        str[i] = str[length - 1 - i];
+        str[length - 1 - i] = temp;
+    }
+    printf("Reversed String: %s\n", str);
+}
+
+void insertStringAtPosition(char *str1, char *str2, int position) {
+    trimNewline(str1);
+    trimNewline(str2);
+
+    int i, j;
+    int length1 = calculateLength(str1);
+    int length2 = calculateLength(str2);
+
+    for (i = length1 - 1; i >= position; i--) {
+        str1[i + length2] = str1[i];
+    }
+
+    for (i = position, j = 0; j < length2; i++, j++) {
+        str1[i] = str2[j];
+    }
+
+    str1[length1 + length2] = '\0';
+    printf("String after Insertion: %s\n", str1);
+}
+
+int main() {
+    char str1[100], str2[100];
+    int choice, position;
+
+    while (1) {
+        printf("\nMenu:\n");
+        printf("1. Show address of each character in string\n");
+        printf("2. Concatenate two strings\n");
+        printf("3. Compare two strings\n");
+        printf("4. Calculate length of the string\n");
+        printf("5. Convert all lowercase characters to uppercase\n");
+        printf("6. Reverse the string\n");
+        printf("7. Insert a string in another string at a user-specified position\n");
+        printf("8. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        getchar();  // To consume newline character left by scanf
+
+        switch (choice) {
+            case 1:
+                printf("Enter the string: ");
+                fgets(str1, sizeof(str1), stdin);
+                trimNewline(str1);
+                showAddress(str1);
+                break;
+
+            case 2:
+                printf("Enter the first string: ");
+                fgets(str1, sizeof(str1), stdin);
+                trimNewline(str1);
+                printf("Enter the second string: ");
+                fgets(str2, sizeof(str2), stdin);
+                trimNewline(str2);
+                concatenateStrings(str1, str2);
+                break;
+
+            case 3:
+                printf("Enter the first string: ");
+                fgets(str1, sizeof(str1), stdin);
+                trimNewline(str1);
+                printf("Enter the second string: ");
+                fgets(str2, sizeof(str2), stdin);
+                trimNewline(str2);
+                if (compareStrings(str1, str2)) {
+                    printf("Strings are equal\n");
+                } else {
+                    printf("Strings are not equal\n");
+                }
+                break;
+
+            case 4:
+                printf("Enter the string: ");
+                fgets(str1, sizeof(str1), stdin);
+                trimNewline(str1);
+                printf("Length of the string: %d\n", calculateLength(str1));
+                break;
+
+            case 5:
+                printf("Enter the string: ");
+                fgets(str1, sizeof(str1), stdin);
+                trimNewline(str1);
+                convertToUpper(str1);
+                break;
+
+            case 6:
+                printf("Enter the string: ");
+                fgets(str1, sizeof(str1), stdin);
+                trimNewline(str1);
+                reverseString(str1);
+                break;
+
+            case 7:
+                printf("Enter the first string: ");
+                fgets(str1, sizeof(str1), stdin);
+                trimNewline(str1);
+                printf("Enter the string to insert: ");
+                fgets(str2, sizeof(str2), stdin);
+                trimNewline(str2);
+                printf("Enter the position to insert the string: ");
+                scanf("%d", &position);
+                insertStringAtPosition(str1, str2, position);
+                break;
+
+            case 8:
+                printf("Exiting...\n");
+                return 0;
+
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+    }
+
+    return 0;
+}
