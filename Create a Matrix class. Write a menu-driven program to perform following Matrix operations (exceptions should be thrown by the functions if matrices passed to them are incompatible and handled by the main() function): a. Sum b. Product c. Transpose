@@ -1,0 +1,135 @@
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+
+class Matrix {
+private:
+    std::vector<std::vector<int> > data;
+    int rows, cols;
+
+public:
+    Matrix(int r, int c) : rows(r), cols(c), data(r, std::vector<int>(c)) {}
+
+    void setElement(int row, int col, int value) {
+        if (row >= rows || col >= cols) {
+            throw std::out_of_range("Matrix indices out of range");
+        }
+        data[row][col] = value;
+    }
+
+    int getElement(int row, int col) const {
+        if (row >= rows || col >= cols) {
+            throw std::out_of_range("Matrix indices out of range");
+        }
+        return data[row][col];
+    }
+
+    int getRows() const { return rows; }
+    int getCols() const { return cols; }
+
+    Matrix operator+(const Matrix& other) const {
+        if (rows != other.rows || cols != other.cols) {
+            throw std::invalid_argument("Matrices dimensions do not match for addition");
+        }
+        Matrix result(rows, cols);
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                result.data[i][j] = data[i][j] + other.data[i][j];
+            }
+        }
+        return result;
+    }
+
+    Matrix operator*(const Matrix& other) const {
+        if (cols != other.rows) {
+            throw std::invalid_argument("Matrices dimensions do not match for multiplication");
+        }
+        Matrix result(rows, other.cols);
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < other.cols; ++j) {
+                for (int k = 0; k < cols; ++k) {
+                    result.data[i][j] += data[i][k] * other.data[k][j];
+                }
+            }
+        }
+        return result;
+    }
+
+    Matrix transpose() const {
+        Matrix result(cols, rows);
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                result.data[j][i] = data[i][j];
+            }
+        }
+        return result;
+    }
+
+    void print() const {
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                std::cout << data[i][j] << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+};
+
+int main() {
+    int r1, c1, r2, c2;
+    std::cout << "Enter the number of rows and columns for the first matrix: ";
+    std::cin >> r1 >> c1;
+    std::cout << "Enter the number of rows and columns for the second matrix: ";
+    std::cin >> r2 >> c2;
+
+    Matrix mat1(r1, c1);
+    Matrix mat2(r2, c2);
+
+    std::cout << "Enter elements of the first matrix:\n";
+    for (int i = 0; i < r1; ++i) {
+        for (int j = 0; j < c1; ++j) {
+            int value;
+            std::cin >> value;
+            mat1.setElement(i, j, value);
+        }
+    }
+
+    std::cout << "Enter elements of the second matrix:\n";
+    for (int i = 0; i < r2; ++i) {
+        for (int j = 0; j < c2; ++j) {
+            int value;
+            std::cin >> value;
+            mat2.setElement(i, j, value);
+        }
+    }
+
+    // Perform addition if matrices are compatible
+    try {
+        std::cout << "Sum of matrices:\n";
+        Matrix sum = mat1 + mat2;
+        sum.print();
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
+    // Perform multiplication if matrices are compatible
+    try {
+        std::cout << "Product of matrices:\n";
+        Matrix product = mat1 * mat2;
+        product.print();
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
+    // Perform transpose of the first matrix
+    std::cout << "Transpose of the first matrix:\n";
+    Matrix transpose1 = mat1.transpose();
+    transpose1.print();
+
+    // Perform transpose of the second matrix
+    std::cout << "Transpose of the second matrix:\n";
+    Matrix transpose2 = mat2.transpose();
+    transpose2.print();
+
+    return 0;
+}
