@@ -1,0 +1,120 @@
+#include <iostream>
+using namespace std;
+
+int binarySearchRecursive(int arr[], int left, int right, int x) {
+    if (left <= right) { // Fix: Use left <= right instead of right >= left
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == x)
+            return mid;
+        if (arr[mid] > x)
+            return binarySearchRecursive(arr, left, mid - 1, x);
+        return binarySearchRecursive(arr, mid + 1, right, x);
+    }
+    return -1;
+}
+
+int main() {
+    int n, x;
+    cout << "Enter number of elements: ";
+    cin >> n;
+    int arr[n];
+    cout << "Enter elements in sorted order: ";
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
+    cout << "Enter element to search: ";
+    cin >> x;
+    int result = binarySearchRecursive(arr, 0, n - 1, x);
+    if (result == -1)
+        cout << "Element not present in the array\n";
+    else
+        cout << "Element present at index " << result << endl;
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include <iostream>
+#include <algorithm> // For std::sort
+using namespace std;
+
+// Iterative binary search function
+int binarySearchIterative(int arr[], int n, int x) {
+    int left = 0;          // Start of the search range
+    int right = n - 1;     // End of the search range
+
+    // Continue searching while the search range is valid
+    while (left <= right) {
+        int mid = left + (right - left) / 2; // Calculate mid to avoid overflow
+
+        // Check if the middle element is the target
+        if (arr[mid] == x) {
+            return mid; // Return the index if found
+        }
+
+        // If the target is smaller, search the left half
+        if (arr[mid] > x) {
+            right = mid - 1;
+        }
+        // If the target is larger, search the right half
+        else {
+            left = mid + 1;
+        }
+    }
+
+    // Return -1 if the target is not found
+    return -1;
+}
+
+int main() {
+    int n, x;
+    cout << "Enter number of elements: ";
+    cin >> n;
+
+    int arr[n];
+    cout << "Enter elements: ";
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    // Sort the array before performing binary search
+    sort(arr, arr + n);
+
+    cout << "Sorted array: ";
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+
+    cout << "Enter element to search: ";
+    cin >> x;
+
+    // Perform binary search
+    int result = binarySearchIterative(arr, n, x);
+
+    // Display the result
+    if (result == -1) {
+        cout << "Element not present in the array\n";
+    } else {
+        cout << "Element present at index " << result << endl;
+    }
+
+    return 0;
+}
