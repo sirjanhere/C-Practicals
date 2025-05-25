@@ -1,0 +1,75 @@
+#include <iostream>
+#include <cmath>
+#include <stdexcept>
+#include <limits>
+using namespace std;
+
+class Triangle {
+private:
+    double side1, side2, side3;
+
+    void validateTriangle() {
+        if (side1 <= 0 || side2 <= 0 || side3 <= 0) {
+            throw invalid_argument("All sides must be greater than 0.");
+        }
+        if (side1 + side2 <= side3 || side1 + side3 <= side2 || side2 + side3 <= side1) {
+            throw invalid_argument("The sum of any two sides must be greater than the third side.");
+        }
+    }
+
+public:
+    Triangle(double a, double b, double c) : side1(a), side2(b), side3(c) {
+        validateTriangle();
+    }
+
+    double calculateArea(double base, double height) {
+        if (base <= 0 || height <= 0) {
+            throw invalid_argument("Base and height must be greater than 0.");
+        }
+        return 0.5 * base * height;
+    }
+
+    double calculateArea() {
+        double s = (side1 + side2 + side3) / 2;
+        return sqrt(s * (s - side1) * (s - side2) * (s - side3));
+    }
+
+    void displaySides() const {
+        cout << "Sides of the triangle: " << side1 << ", " << side2 << ", " << side3 << endl;
+    }
+};
+
+int main() {
+    try {
+        double a, b, c;
+        cout << "Enter the sides of the triangle: ";
+        cin >> a >> b >> c;
+
+        // Validate sides input
+        if (cin.fail()) {
+            throw invalid_argument("Invalid input! Please enter numeric values for the sides of the triangle.");
+        }
+
+        Triangle triangle(a, b, c);
+        triangle.displaySides();
+        cout << "Area of the triangle (using Heron's formula): " << triangle.calculateArea() << endl;
+
+        double base, height;
+        cout << "Enter the base and height of the right-angled triangle: ";
+        cin >> base >> height;
+
+        // Validate base and height input
+        if (cin.fail()) {
+            cin.clear(); // Clear error flag
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
+            throw invalid_argument("Invalid input! Please enter numeric values for base and height.");
+        }
+
+        cout << "Area of the right-angled triangle: " << triangle.calculateArea(base, height) << endl;
+
+    } catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
+    }
+
+    return 0;
+}
