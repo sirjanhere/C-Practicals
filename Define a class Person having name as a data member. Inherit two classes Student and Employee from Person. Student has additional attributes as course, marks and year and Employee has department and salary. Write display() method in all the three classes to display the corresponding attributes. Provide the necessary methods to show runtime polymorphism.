@@ -1,0 +1,117 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Base class Person
+class Person {
+protected:
+    string name;
+
+public:
+    Person(string n) : name(n) {} // Constructor
+
+    virtual void display() {
+        cout << "Name: " << name << endl;
+    }
+
+    virtual ~Person() {} // Virtual destructor for proper cleanup
+};
+
+// Derived class Student
+class Student : public Person {
+private:
+    string course;
+    int marks;
+    int year;
+
+public:
+    Student(string n, string c, int m, int y) : Person(n), course(c), marks(m), year(y) {}
+
+    void display() override {
+        cout << "Student Details:" << endl;
+        cout << "Name: " << name << endl;
+        cout << "Course: " << course << endl;
+        cout << "Marks: " << marks << endl;
+        cout << "Year: " << year << endl;
+    }
+};
+
+// Derived class Employee
+class Employee : public Person {
+private:
+    string department;
+    string salary; // Changed salary from double to string
+
+public:
+    Employee(string n, string d, string s) : Person(n), department(d), salary(s) {}
+
+    void display() override {
+        cout << "Employee Details:" << endl;
+        cout << "Name: " << name << endl;
+        cout << "Department: " << department << endl;
+        cout << "Salary: " << salary << endl;
+    }
+};
+
+int main() {
+    Person* personPtr;
+    string name, course, department, salary; // Changed salary to string
+    int marks, year;
+    int choice;
+
+    while (true) {
+        cout << "\nMenu:\n";
+        cout << "1. Enter details for Student\n";
+        cout << "2. Enter details for Employee\n";
+        cout << "3. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+        cin.ignore(); // To consume the newline character left in the input buffer
+
+        switch (choice) {
+            case 1:
+                cout << "Enter Student Name: ";
+                getline(cin, name);
+                cout << "Enter Course: ";
+                getline(cin, course);
+                cout << "Enter Marks: ";
+                cin >> marks;
+                cout << "Enter Year: ";
+                cin >> year;
+                cin.ignore(); // To consume the newline character
+
+                // Create Student object
+                {
+                    Student student(name, course, marks, year);
+                    personPtr = &student;
+                    cout << "\nStudent details are:\n";
+                    personPtr->display();
+                }
+                break;
+
+            case 2:
+                cout << "Enter Employee Name: ";
+                getline(cin, name);
+                cout << "Enter Department: ";
+                getline(cin, department);
+                cout << "Enter Salary: ";
+                getline(cin, salary); // Allow alphanumeric input
+
+                // Create Employee object
+                {
+                    Employee employee(name, department, salary);
+                    personPtr = &employee;
+                    cout << "\nEmployee details are:\n";
+                    personPtr->display();
+                }
+                break;
+
+            case 3:
+                cout << "Exiting program...\n";
+                return 0;
+
+            default:
+                cout << "Invalid choice! Please try again.\n";
+        }
+    }
+}
