@@ -1,0 +1,39 @@
+#include <iostream>
+#include <cctype>
+#include <map>
+#include <iomanip>
+#include <string>
+
+using namespace std;
+
+int main() {
+    string input;
+    map<char, int> letterCounts;
+
+    cout << "Enter text: ";
+    getline(cin, input);
+
+    // Count occurrences of each letter (case-insensitive)
+    for (size_t i = 0; i < input.length(); i++) {
+        char c = input[i];
+        if (isalpha(c)) {
+            char lowerC = tolower(c);
+            letterCounts[lowerC]++;
+        }
+    }
+
+    // Print the table header
+    cout << "\nLetter Occurrences Table:\n";
+    cout << "+-------+-------------+\n";
+    cout << "| Letter | Occurrences |\n";
+    cout << "+-------+-------------+\n";
+
+    // Print counts for each letter
+    for (char c = 'a'; c <= 'z'; c++) {
+        cout << "|   " << c << "   |     " << setw(3) << letterCounts[c] << "     |\n";
+    }
+
+    cout << "+-------+-------------+\n";
+
+    return 0;
+}
